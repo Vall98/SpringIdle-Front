@@ -2,12 +2,10 @@
 import { SignupFormSchema, FormState, TokenResponse } from '@/app/lib/definitions'
 import { storeSession } from '@/app/lib/session';
 
-const BASE_URL = "http://localhost:8000"
-
 async function fetchToken(url: string, formData: any): Promise<TokenResponse> {
   // This has to be handled as a promise because on error, the object
   // returned by the server is hidden in a Promise (text()).
-  return fetch(BASE_URL + url, {
+  return fetch(process.env.BASE_URL + url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
