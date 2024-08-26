@@ -130,7 +130,6 @@ export async function isSessionValid(): Promise<boolean> {
   // the user's data.
   const res = await fetchWithCredentials("/users/me", 'GET', undefined);
   if (res.error) {
-    console.log(res);
     deleteSession();
     return false;
   }
@@ -138,10 +137,8 @@ export async function isSessionValid(): Promise<boolean> {
   return true;
 }
 
-/*
 // Check if the local session is expired,
 // without fetching the API
 export async function isSessionNotExpired(): Promise<boolean> {
-  return checkTokenIsValid() != undefined;
+  return await checkTokenIsValid() != undefined;
 }
-*/

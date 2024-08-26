@@ -2,7 +2,8 @@
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import { authUser, createUser, isSessionValid, signUserOut } from '@/app/actions/auth';
 import { FormState } from '@/app/lib/definitions';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { authMandatoryPaths } from '@/middleware';
 
 const AuthContext = createContext({
   isAuthenticated: false,
@@ -14,6 +15,7 @@ const AuthContext = createContext({
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     isSessionValid().then((authenticated: boolean) => {
@@ -42,6 +44,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signout = async () => {
     await signUserOut();
     setIsAuthenticated(false);
+    if (authMandatoryPaths.includes(pathname)) {
+      router.push('/');
+    }
   }
 
   return (
