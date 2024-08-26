@@ -1,11 +1,13 @@
 'use client'
  
-import { signup } from '@/app/actions/auth'
 //import { useActionState } from 'react'
 import { useFormStatus, useFormState } from 'react-dom'
+import { useAuthContext } from '@/app/context/auth';
  
 export function SignupForm() {
-  const [state, action/*, pending*/] = useFormState/*useActionState*/(signup, undefined) // TEMP FIX UNTIL NEXT IS UPDATED
+  const authContext = useAuthContext();
+  authContext.signup
+  const [state, action/*, pending*/] = useFormState/*useActionState*/(authContext.signup, undefined) // TEMP FIX UNTIL NEXT IS UPDATED
  
   return (
     <form action={action}>
@@ -22,7 +24,7 @@ export function SignupForm() {
         <div>
           <p>Password must:</p>
           <ul>
-            {state.errors.password.map((error) => (
+            {state.errors.password.map((error: any) => (
               <li key={error}>- {error}</li>
             ))}
           </ul>

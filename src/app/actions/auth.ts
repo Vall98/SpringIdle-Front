@@ -1,6 +1,6 @@
 'use server'
-import { SignupFormSchema, FormState, TokenResponse } from '@/app/lib/definitions'
-import { storeSession } from '@/app/lib/session';
+import { SignupFormSchema, TokenResponse } from '@/app/lib/definitions'
+import { checkTokenIsValid, deleteSession, storeSession } from '@/app/lib/session';
 
 async function fetchToken(url: string, formData: any): Promise<TokenResponse> {
   // This has to be handled as a promise because on error, the object
@@ -23,6 +23,38 @@ async function fetchToken(url: string, formData: any): Promise<TokenResponse> {
       return {
         token: await res.json()
       };
+    }    
+  }).catch((err: Error) => {
+    return {
+      error: err,
+    };
+  });
+}
+
+export async function fetchWithCredentials(url: string, method: string, body: any): Promise<any> {
+  const token = await checkTokenIsValid();
+  if (!token) {
+    return {
+      error: "Invalid credentials",
+    };
+  }
+  return fetch(process.env.BASE_URL + url, {
+    method: method,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': token,
+    },
+    body: body
+  }).then(async res => {
+    if(!res.ok) {
+      return res.text().then(text => {
+        // text is a stringified object returned by the server,
+        // i.e. { detail: error_message }
+        const err = JSON.parse(text);
+        throw new Error(err.detail);
+      })
+    } else {
+      return res;
     }    
   }).catch((err: Error) => {
     return {
@@ -61,7 +93,7 @@ function handleTokenResponse(res: TokenResponse, action: string) {
   storeSession(res.token);
 }
 
-export async function signup(state: FormState, formData: FormData) {
+export async function createUser(formData: FormData) {
   const validatedFields = SignupFormSchema.safeParse({
     username: formData.get('username'),
     password: formData.get('password'),
@@ -74,7 +106,7 @@ export async function signup(state: FormState, formData: FormData) {
   return handleTokenResponse(await fetchToken("/users/create", validatedFields.data), "Signup");
 }
 
-export async function signin(state: FormState, formData: FormData) {
+export async function authUser(formData: FormData) {
   const validatedFields = SignupFormSchema.safeParse({
     username: formData.get('username'),
     password: formData.get('password'),
@@ -86,3 +118,30 @@ export async function signin(state: FormState, formData: FormData) {
   }
   return handleTokenResponse(await fetchToken("/users/token", validatedFields.data), "Signin");
 }
+
+export async function signUserOut(): Promise<void> {
+  return deleteSession();
+}
+
+// Check if the local session is  not expired,
+// then check the session is valid on the API.
+export async function isSessionValid(): Promise<boolean> {
+  // TODO: change to a route that returns the expiracy date instead of
+  // the user's data.
+  const res = await fetchWithCredentials("/users/me", 'GET', undefined);
+  if (res.error) {
+    console.log(res);
+    deleteSession();
+    return false;
+  }
+
+  return true;
+}
+
+/*
+// Check if the local session is expired,
+// without fetching the API
+export async function isSessionNotExpired(): Promise<boolean> {
+  return checkTokenIsValid() != undefined;
+}
+*/

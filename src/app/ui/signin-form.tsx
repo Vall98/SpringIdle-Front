@@ -1,11 +1,12 @@
 'use client'
  
-import { signin } from '@/app/actions/auth'
 //import { useActionState } from 'react'
 import { useFormStatus, useFormState } from 'react-dom'
+import { useAuthContext } from '@/app/context/auth';
  
 export function SigninForm() {
-  const [state, action/*, pending*/] = useFormState/*useActionState*/(signin, undefined) // TEMP FIX UNTIL NEXT IS UPDATED
+  const authContext = useAuthContext();
+  const [state, action/*, pending*/] = useFormState/*useActionState*/(authContext.signin, undefined) // TEMP FIX UNTIL NEXT IS UPDATED
  
   return (
     <form action={action}>
@@ -22,7 +23,7 @@ export function SigninForm() {
         <div>
           <p>Password must:</p>
           <ul>
-            {state.errors.password.map((error) => (
+            {state.errors.password.map((error: any) => (
               <li key={error}>- {error}</li>
             ))}
           </ul>

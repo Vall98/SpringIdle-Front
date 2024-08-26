@@ -28,13 +28,13 @@ export type FormState =
     }
   | undefined
 
-export class Token {
-  access_token: string = "";
-  token_type: string = "";
+export type Token = {
+  access_token: string;
+  token_type: string;
   expires?: string;
 }
   
-export class TokenResponse {
+export type TokenResponse = {
   error?: Error;
   token?: Token;
 }
