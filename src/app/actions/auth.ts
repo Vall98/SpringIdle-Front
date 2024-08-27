@@ -12,18 +12,15 @@ async function fetchToken(url: string, formData: any): Promise<TokenResponse> {
     },
     body: new URLSearchParams(formData)
   }).then(async res => {
-    if(!res.ok) {
-      return res.text().then(text => {
-        // text is a stringified object returned by the server,
-        // i.e. { detail: error_message}
-        const err = JSON.parse(text);
-        throw new Error(err.detail);
-      })
-    } else {
-      return {
-        token: await res.json()
-      };
-    }    
+    return res.json().then(data => {
+      if(!res.ok) {
+        throw new Error(data.detail);
+      } else {
+        return {
+          token: data
+        };
+      }    
+    })
   }).catch((err: Error) => {
     return {
       error: err,
@@ -46,19 +43,16 @@ export async function fetchWithCredentials(url: string, method: string, body: an
     },
     body: body
   }).then(async res => {
-    if(!res.ok) {
-      return res.text().then(text => {
-        // text is a stringified object returned by the server,
-        // i.e. { detail: error_message }
-        const err = JSON.parse(text);
-        throw new Error(err.detail);
-      })
-    } else {
-      return res;
-    }    
+    return res.json().then(data => {
+      if(!res.ok) {
+        throw new Error(data.detail);
+      } else {
+        return data;
+      }
+    })
   }).catch((err: Error) => {
     return {
-      error: err,
+      error: err.message,
     };
   });
 }
@@ -125,16 +119,15 @@ export async function signUserOut(): Promise<void> {
 
 // Check if the local session is  not expired,
 // then check the session is valid on the API.
-export async function isSessionValid(): Promise<boolean> {
+export async function isSessionValid(): Promise<any> {
   // TODO: change to a route that returns the expiracy date instead of
   // the user's data.
   const res = await fetchWithCredentials("/users/me", 'GET', undefined);
   if (res.error) {
     deleteSession();
-    return false;
+    return undefined;
   }
-
-  return true;
+  return res;
 }
 
 // Check if the local session is expired,

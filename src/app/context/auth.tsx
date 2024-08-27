@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signup = async (formState: FormState, formData: FormData) => {
     const err = await createUser(formData);
     if (err) {
-      return authUser;
+      return err;
     }
     setIsAuthenticated(true);
     router.push('/');
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signin = async (formState: FormState, formData: FormData) => {
     const err = await authUser(formData);
     if (err) {
-      return authUser;
+      return err;
     }
     setIsAuthenticated(true);
     router.push('/');

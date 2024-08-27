@@ -2,10 +2,6 @@
 
 import { fetchWithCredentials } from "./auth"
 
-export async function getCurrentUserInfo() {
-  const res = await fetchWithCredentials('/me', 'GET', undefined);
-  if (res.error) {
-    return;
-  }
-
+export async function getCurrentUserInfo(): Promise<any> {
+  return await fetchWithCredentials('/users/me', 'GET', undefined);
 }

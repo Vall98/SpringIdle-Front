@@ -38,3 +38,7 @@ export type TokenResponse = {
   error?: Error;
   token?: Token;
 }
+
+export type User = {
+  username: string;
+}
