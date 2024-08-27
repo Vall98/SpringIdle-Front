@@ -26,7 +26,7 @@ export function SigninForm() {
         <SubmitButton />
       </div>
       <p className="text-center text-gray-600 text-sm mt-4">
-        Don't have an account? <Link href="/join" className="text-blue-500 hover:text-blue-800">Sign Up</Link>
+        Don&apos;t have an account? <Link href="/join" className="text-blue-500 hover:text-blue-800">Sign Up</Link>
       </p>
     </form>
   )

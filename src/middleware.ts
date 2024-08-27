@@ -21,7 +21,6 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-const routes = authMandatoryPaths.concat(authForbiddenPaths);
 export const config = {
-  matcher: routes,
+  matcher: authMandatoryPaths.concat(authForbiddenPaths),
 }
