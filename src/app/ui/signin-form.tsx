@@ -14,8 +14,11 @@ export function SigninForm() {
   return (
     <form action={action}>
       <h2 className="text-3xl font-semibold text-center text-gray-800 mb-6">Login</h2>
+      {state?.errors?.username && <p className="text-red-400">{state.errors.username}</p>}
+      {state?.errors?.password && <p className="text-red-400">{state.errors.password}</p>}
       <InputField label="Username" id="username" type="text" required={true} />
       <InputField label="Password" id="password" type="password" required={true} />
+      <br/>
       <div className="text-center">
         {/*<Button aria-disabled={pending} type="submit">
           {pending ? 'Submitting...' : 'Sign in'}
