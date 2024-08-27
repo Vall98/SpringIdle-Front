@@ -6,7 +6,7 @@ const Navbar = () => {
   const authContext = useAuthContext();
 
   return (
-    <nav className="bg-[#22313f] p-4 absolute w-screen">
+    <nav className="bg-[#273747] p-4 absolute w-screen">
       <div className="container mx-auto flex justify-between items-center">
         <div className="text-white text-xl font-bold">
           <Link href="/">SpringIdle</Link>

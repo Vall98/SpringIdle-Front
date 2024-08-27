@@ -3,6 +3,9 @@
 //import { useActionState } from 'react'
 import { useFormStatus, useFormState } from 'react-dom'
 import { useAuthContext } from '@/app/context/auth';
+import { Button } from './button';
+import { InputField } from './input-field';
+import Link from 'next/link';
  
 export function SigninForm() {
   const authContext = useAuthContext();
@@ -10,29 +13,18 @@ export function SigninForm() {
  
   return (
     <form action={action}>
-      <div>
-        <label htmlFor="username">Username</label>
-        <input id="username" name="username" placeholder="Username" />
+      <h2 className="text-3xl font-semibold text-center text-gray-800 mb-6">Login</h2>
+      <InputField label="Username" id="username" type="text" required={true} />
+      <InputField label="Password" id="password" type="password" required={true} />
+      <div className="text-center">
+        {/*<Button aria-disabled={pending} type="submit">
+          {pending ? 'Submitting...' : 'Sign in'}
+        </Button>*/}
+        <SubmitButton />
       </div>
-      {state?.errors?.username && <p>{state.errors.username}</p>}
-      <div>
-        <label htmlFor="password">Password</label>
-        <input id="password" name="password" type="Password" />
-      </div>
-      {state?.errors?.password && (
-        <div>
-          <p>Password must:</p>
-          <ul>
-            {state.errors.password.map((error: any) => (
-              <li key={error}>- {error}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-      <SubmitButton />
-      {/*<button aria-disabled={pending} type="submit">
-        {pending ? 'Submitting...' : 'Sign in'}
-      </button>*/}
+      <p className="text-center text-gray-600 text-sm mt-4">
+        Don't have an account? <Link href="/join" className="text-blue-500 hover:text-blue-800">Sign Up</Link>
+      </p>
     </form>
   )
 }
@@ -41,8 +33,8 @@ function SubmitButton() {
   const { pending } = useFormStatus()
 
   return (
-    <button type="submit" disabled={pending}>
+    <Button type="submit" disabled={pending}>
       {pending ? 'Submitting...' : 'Sign in'}
-    </button>
+    </Button>
   )
 }
